@@ -15,15 +15,12 @@ if (empty($name) || empty($email) || empty($password)) {
 }
 
 try {
-    $stmt = $pdo->prepare("INSERT INTO users (name, email, phone, password) VALUES (?, ?, ?, ?)");
+    $stmt = $pdo->prepare("INSERT INTO food_users (name, email, phone, password) VALUES (?, ?, ?, ?)");
     $hashed = password_hash($password, PASSWORD_DEFAULT);
     $stmt->execute([$name, $email, $phone, $hashed]);
 
-    echo json_encode([
-        'status' => 'success',
-        'message' => 'Регистрация прошла успешно'
-    ]);
+    echo json_encode(['status' => 'success', 'message' => 'Регистрация прошла успешно']);
 } catch(Exception $e) {
-    echo json_encode(['status' => 'error', 'message' => 'Пользователь с таким email уже существует']);
+    echo json_encode(['status' => 'error', 'message' => 'Email уже занят']);
 }
 ?>
