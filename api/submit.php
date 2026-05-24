@@ -18,7 +18,7 @@ if (empty($name) || empty($phone) || empty($email) || $guests < 1) {
 }
 
 try {
-    $stmt = $pdo->prepare("INSERT INTO orders 
+    $stmt = $pdo->prepare("INSERT INTO food_orders 
         (name, phone, email, event_date, guests, event_type, message) 
         VALUES (?, ?, ?, ?, ?, ?, ?)");
     
@@ -26,10 +26,10 @@ try {
 
     echo json_encode([
         'status' => 'success',
-        'message' => 'Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.',
+        'message' => 'Заявка успешно отправлена!',
         'order_id' => $pdo->lastInsertId()
     ]);
 } catch(Exception $e) {
-    echo json_encode(['status' => 'error', 'message' => 'Ошибка при сохранении заявки']);
+    echo json_encode(['status' => 'error', 'message' => 'Ошибка сохранения заявки']);
 }
 ?>
