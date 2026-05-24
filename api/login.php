@@ -7,7 +7,7 @@ $data = json_decode(file_get_contents('php://input'), true);
 $email = trim($data['email'] ?? '');
 $password = $data['password'] ?? '';
 
-$stmt = $pdo->prepare("SELECT id, name, password FROM users WHERE email = ?");
+$stmt = $pdo->prepare("SELECT id, name, password FROM food_users WHERE email = ?");
 $stmt->execute([$email]);
 $user = $stmt->fetch();
 
