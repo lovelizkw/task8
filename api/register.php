@@ -10,7 +10,7 @@ $phone    = trim($data['phone'] ?? '');
 $password = $data['password'] ?? '';
 
 if (empty($name) || empty($email) || empty($password)) {
-    echo json_encode(['status' => 'error', 'message' => 'Заполните имя, email и пароль']);
+    echo json_encode(['status' => 'error', 'message' => 'Заполните все обязательные поля']);
     exit;
 }
 
