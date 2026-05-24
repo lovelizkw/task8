@@ -2,11 +2,7 @@
 header('Content-Type: application/json');
 require_once '../config.php';
 
-$data = json_decode(file_get_contents('php://input'), true);
-
-if (empty($data)) {
-    $data = $_POST;
-}
+$data = json_decode(file_get_contents('php://input'), true) ?: $_POST;
 
 $name       = trim($data['name'] ?? '');
 $phone      = trim($data['phone'] ?? '');
@@ -17,26 +13,25 @@ $event_type = $data['event_type'] ?? $data['eventType'] ?? '';
 $message    = trim($data['message'] ?? '');
 
 if (empty($name) || empty($phone) || empty($email) || $guests < 1) {
-    echo json_encode([
-        'status' => 'error', 
-        'message' => 'Заполните обязательные поля'
-    ]);
+    echo json_encode(['status' => 'error', 'message' => 'Заполните обязательные поля']);
     exit;
 }
 
+$user_id = $_SESSION['user_id'] ?? null;
+
 try {
     $stmt = $pdo->prepare("INSERT INTO food_orders 
-        (name, phone, email, event_date, guests, event_type, message) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)");
+        (user_id, name, phone, email, event_date, guests, event_type, message) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
     
-    $stmt->execute([$name, $phone, $email, $event_date, $guests, $event_type, $message]);
+    $stmt->execute([$user_id, $name, $phone, $email, $event_date, $guests, $event_type, $message]);
 
     echo json_encode([
         'status' => 'success',
-        'message' => 'Заявка успешно отправлена! Мы свяжемся с вами.',
+        'message' => 'Заявка успешно отправлена!',
         'order_id' => $pdo->lastInsertId()
     ]);
 } catch(Exception $e) {
-    echo json_encode(['status' => 'error', 'message' => 'Ошибка сохранения заявки']);
+    echo json_encode(['status' => 'error', 'message' => 'Ошибка сохранения']);
 }
 ?>
