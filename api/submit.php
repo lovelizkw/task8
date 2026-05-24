@@ -4,16 +4,23 @@ require_once '../config.php';
 
 $data = json_decode(file_get_contents('php://input'), true);
 
+if (empty($data)) {
+    $data = $_POST;
+}
+
 $name       = trim($data['name'] ?? '');
 $phone      = trim($data['phone'] ?? '');
 $email      = trim($data['email'] ?? '');
 $event_date = $data['date'] ?? '';
 $guests     = (int)($data['guests'] ?? 0);
-$event_type = $data['event_type'] ?? '';
+$event_type = $data['event_type'] ?? $data['eventType'] ?? '';
 $message    = trim($data['message'] ?? '');
 
 if (empty($name) || empty($phone) || empty($email) || $guests < 1) {
-    echo json_encode(['status' => 'error', 'message' => 'Заполните обязательные поля']);
+    echo json_encode([
+        'status' => 'error', 
+        'message' => 'Заполните обязательные поля'
+    ]);
     exit;
 }
 
@@ -26,7 +33,7 @@ try {
 
     echo json_encode([
         'status' => 'success',
-        'message' => 'Заявка успешно отправлена!',
+        'message' => 'Заявка успешно отправлена! Мы свяжемся с вами.',
         'order_id' => $pdo->lastInsertId()
     ]);
 } catch(Exception $e) {
