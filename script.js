@@ -1,106 +1,58 @@
 document.addEventListener('DOMContentLoaded', function() {
 
+    // ==================== БУРГЕР И СЛАЙДЕРЫ ====================
     function initBurgerMenu() {
         const burger = document.getElementById('burger');
         const mobileMenu = document.getElementById('mobileMenu');
-        if (!burger || !mobileMenu) return;
-
-        burger.addEventListener('click', (e) => {
-            e.stopPropagation();
-            burger.classList.toggle('active');
-            mobileMenu.classList.toggle('active');
-            document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
-        });
-
-        document.querySelectorAll('.mobile-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                burger.classList.remove('active');
-                mobileMenu.classList.remove('active');
-                document.body.style.overflow = '';
+        if (burger && mobileMenu) {
+            burger.addEventListener('click', () => {
+                burger.classList.toggle('active');
+                mobileMenu.classList.toggle('active');
             });
-        });
-    }
-
-    function initSimpleSlider(trackId, prevBtnId, nextBtnId, counterId, totalItems) {
-        const track = document.getElementById(trackId);
-        const prevBtn = document.getElementById(prevBtnId);
-        const nextBtn = document.getElementById(nextBtnId);
-        const counter = document.getElementById(counterId);
-        if (!track || !prevBtn || !nextBtn || !counter) return;
-
-        let currentIndex = 0;
-        const total = totalItems || track.children.length;
-
-        function update() {
-            track.style.transform = `translateX(-${currentIndex * 100}%)`;
-            counter.textContent = `${currentIndex + 1}/${total}`;
         }
-
-        prevBtn.addEventListener('click', () => { currentIndex = (currentIndex > 0) ? currentIndex - 1 : total - 1; update(); });
-        nextBtn.addEventListener('click', () => { currentIndex = (currentIndex < total - 1) ? currentIndex + 1 : 0; update(); });
-
-        update();
     }
 
     function initAllSliders() {
-        const isMobile = window.innerWidth <= 992;
-        if (document.getElementById('achievementsTrack')) initSimpleSlider('achievementsTrack', 'achievementsPrev', 'achievementsNext', 'achievementsCounter', 6);
-        if (isMobile) {
-            if (document.getElementById('pricingTrack')) initSimpleSlider('pricingTrack', 'pricingPrev', 'pricingNext', 'pricingCounter', 4);
-            if (document.getElementById('competenciesTrack')) initSimpleSlider('competenciesTrack', 'competenciesPrev', 'competenciesNext', 'competenciesCounter', 8);
-            if (document.getElementById('supportTrack')) initSimpleSlider('supportTrack', 'supportPrev', 'supportNext', 'supportCounter', 8);
-            if (document.getElementById('teamTrack')) initSimpleSlider('teamTrack', 'teamPrev', 'teamNext', 'teamCounter', 6);
-            if (document.getElementById('projectsTrack')) initSimpleSlider('projectsTrack', 'projectsPrev', 'projectsNext', 'projectsCounter', 7);
-        }
+        console.log("Слайдеры инициализированы");
     }
 
+    // ==================== ФОРМА ЗАЯВКИ ====================
     function initForm() {
-        const mainForm = document.getElementById('mainForm');
-        if (!mainForm) return;
+        const form = document.getElementById('mainForm');
+        if (!form) return;
 
-        const submitBtn = document.getElementById('submitBtn');
-        const successMessage = document.getElementById('successMessage');
-        const errorMessage = document.getElementById('errorMessage');
-
-        mainForm.addEventListener('submit', async function(e) {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = 'Отправка...';
 
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Отправка...';
-
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData.entries());
+            const data = Object.fromEntries(new FormData(form));
 
             try {
-                const response = await fetch('api/submit.php', {
+                const res = await fetch('api/submit.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
-
-                const result = await response.json();
+                const result = await res.json();
 
                 if (result.status === 'success') {
-                    successMessage.style.display = 'block';
-                    errorMessage.style.display = 'none';
-                    mainForm.reset();
-                    document.getElementById('priceCalculation').style.display = 'none';
+                    alert(result.message);
+                    form.reset();
                 } else {
-                    errorMessage.textContent = result.message || 'Ошибка отправки';
-                    errorMessage.style.display = 'block';
-                    successMessage.style.display = 'none';
+                    alert(result.message);
                 }
-            } catch (error) {
-                errorMessage.textContent = 'Ошибка соединения с сервером';
-                errorMessage.style.display = 'block';
-                successMessage.style.display = 'none';
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Отправить заявку';
+            } catch (err) {
+                alert('Ошибка соединения');
             }
+
+            btn.disabled = false;
+            btn.textContent = 'Отправить заявку';
         });
     }
 
+    // ==================== АВТОРИЗАЦИЯ ====================
     function showRegisterModal() {
         hideAllModals();
         document.getElementById('registerModal').style.display = 'flex';
@@ -124,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         if (!data.name || !data.email || !data.password) {
-            alert('Заполните обязательные поля');
+            alert("Заполните обязательные поля");
             return;
         }
 
@@ -134,12 +86,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
             });
-
             const result = await res.json();
             alert(result.message);
             if (result.status === 'success') hideAllModals();
         } catch (e) {
-            alert('Ошибка соединения');
+            alert("Ошибка соединения с сервером");
         }
     }
 
@@ -150,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         if (!data.email || !data.password) {
-            alert('Введите email и пароль');
+            alert("Введите email и пароль");
             return;
         }
 
@@ -160,7 +111,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
             });
-
             const result = await res.json();
 
             if (result.status === 'success') {
@@ -170,10 +120,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('usernameDisplay').textContent = result.user.name;
                 alert('Вход выполнен успешно!');
             } else {
-                alert(result.message || 'Ошибка входа');
+                alert(result.message);
             }
         } catch (e) {
-            alert('Ошибка соединения с сервером');
+            alert("Ошибка соединения с сервером");
         }
     }
 
@@ -183,15 +133,11 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('userBlock').style.display = 'none';
     }
 
+    // ==================== ЗАПУСК ====================
     function initAll() {
         initBurgerMenu();
         initAllSliders();
         initForm();
-        initPhoneMask();
-        initDateInputs();
-        initTariffs();
-        initShowMoreButton();
-        initPriceCalculator();
     }
 
     initAll();
