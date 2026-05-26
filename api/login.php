@@ -17,7 +17,7 @@ if ($user && password_verify($password, $user['password'])) {
 
     echo json_encode([
         'status' => 'success',
-        'message' => 'Авторизация успешна',
+        'message' => 'Вход выполнен',
         'user' => [
             'id' => $user['id'],
             'name' => $user['name'],
