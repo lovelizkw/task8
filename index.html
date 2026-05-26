@@ -7,6 +7,30 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
+
+<div id="registerModal" class="modal">
+    <div class="modal-content">
+        <h3>Регистрация</h3>
+        <input type="text" id="reg_name" placeholder="Ваше имя" required>
+        <input type="email" id="reg_email" placeholder="E-mail" required>
+        <input type="tel" id="reg_phone" placeholder="Телефон">
+        <input type="password" id="reg_password" placeholder="Пароль" required>
+        <button onclick="registerUser()">Зарегистрироваться</button>
+        <button onclick="hideAllModals()">Отмена</button>
+    </div>
+</div>
+
+<!-- Модальное окно входа -->
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <h3>Вход в аккаунт</h3>
+        <input type="email" id="login_email" placeholder="E-mail" required>
+        <input type="password" id="login_password" placeholder="Пароль" required>
+        <button onclick="loginUser()">Войти</button>
+        <button onclick="hideAllModals()">Отмена</button>
+    </div>
+</div>
+  
 <body>
 
   <header>
