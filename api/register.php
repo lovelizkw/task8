@@ -4,23 +4,23 @@ require_once '../config.php';
 
 $data = json_decode(file_get_contents('php://input'), true) ?: $_POST;
 
-$name     = trim($data['name'] ?? '');
-$email    = trim($data['email'] ?? '');
-$phone    = trim($data['phone'] ?? '');
+$email = trim($data['email'] ?? '');
 $password = $data['password'] ?? '';
 
-if (empty($name) || empty($email) || empty($password)) {
-    echo json_encode(['status' => 'error', 'message' => 'Заполните обязательные поля']);
-    exit;
-}
+$stmt = $pdo->prepare("SELECT id, name, email FROM food_users WHERE email = ?");
+$stmt->execute([$email]);
+$user = $stmt->fetch();
 
-try {
-    $stmt = $pdo->prepare("INSERT INTO food_users (name, email, phone, password) VALUES (?, ?, ?, ?)");
-    $hashed = password_hash($password, PASSWORD_DEFAULT);
-    $stmt->execute([$name, $email, $phone, $hashed]);
+if ($user && password_verify($password, $user['password'])) {
+    $_SESSION['user_id'] = $user['id'];
+    $_SESSION['user_name'] = $user['name'];
 
-    echo json_encode(['status' => 'success', 'message' => 'Регистрация успешна']);
-} catch(Exception $e) {
-    echo json_encode(['status' => 'error', 'message' => 'Email уже существует']);
+    echo json_encode([
+        'status' => 'success',
+        'message' => 'Вход выполнен',
+        'user' => $user
+    ]);
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Неверный email или пароль']);
 }
 ?>
