@@ -277,3 +277,37 @@ function logout() {
     document.getElementById('authBlock').style.display = 'flex';
     document.getElementById('userBlock').style.display = 'none';
 }
+
+async function showProfile() {
+    hideAllModals();
+    const modal = document.getElementById('profileModal');
+    modal.style.display = 'flex';
+
+    const res = await fetch('api/profile.php');
+    const data = await res.json();
+
+    if (data.status === 'success') {
+        let html = `<p><strong>Имя:</strong> ${data.user.name}</p>
+                    <p><strong>Email:</strong> ${data.user.email}</p>
+                    <p><strong>Телефон:</strong> ${data.user.phone || 'Не указан'}</p>`;
+
+        if (data.orders.length > 0) {
+            html += '<table border="1" style="width:100%; margin-top:15px; border-collapse:collapse;">';
+            html += '<tr><th>Дата</th><th>Тип</th><th>Гостей</th><th>Статус</th></tr>';
+            
+            data.orders.forEach(order => {
+                html += `<tr>
+                    <td>${order.event_date}</td>
+                    <td>${order.event_type}</td>
+                    <td>${order.guests}</td>
+                    <td>Активна</td>
+                </tr>`;
+            });
+            html += '</table>';
+        } else {
+            html += '<p>У вас пока нет заявок.</p>';
+        }
+
+        document.getElementById('profileInfo').innerHTML = html;
+    }
+}
