@@ -212,3 +212,68 @@ document.addEventListener('DOMContentLoaded', function() {
 
   initAll();
 });
+
+function showRegisterModal() {
+    hideAllModals();
+    document.getElementById('registerModal').style.display = 'flex';
+}
+
+function showLoginModal() {
+    hideAllModals();
+    document.getElementById('loginModal').style.display = 'flex';
+}
+
+function hideAllModals() {
+    document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+}
+
+async function registerUser() {
+    const data = {
+        name: document.getElementById('reg_name').value,
+        email: document.getElementById('reg_email').value,
+        phone: document.getElementById('reg_phone').value,
+        password: document.getElementById('reg_password').value
+    };
+
+    const res = await fetch('api/register.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    });
+
+    const result = await res.json();
+    alert(result.message);
+    if (result.status === 'success') {
+        hideAllModals();
+    }
+}
+
+async function loginUser() {
+    const data = {
+        email: document.getElementById('login_email').value,
+        password: document.getElementById('login_password').value
+    };
+
+    const res = await fetch('api/login.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    });
+
+    const result = await res.json();
+    
+    if (result.status === 'success') {
+        hideAllModals();
+        document.getElementById('authBlock').style.display = 'none';
+        document.getElementById('userBlock').style.display = 'flex';
+        document.getElementById('usernameDisplay').textContent = result.user.name;
+    } else {
+        alert(result.message);
+    }
+}
+
+function logout() {
+    fetch('api/logout.php', { method: 'POST' });
+    document.getElementById('authBlock').style.display = 'flex';
+    document.getElementById('userBlock').style.display = 'none';
+}
