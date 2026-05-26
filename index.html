@@ -20,7 +20,6 @@
     </div>
 </div>
 
-<!-- Модальное окно входа -->
 <div id="loginModal" class="modal">
     <div class="modal-content">
         <h3>Вход в аккаунт</h3>
@@ -1262,5 +1261,17 @@
 </section>
 
   <script src="script.js"></script>
+ 
+<div id="profileModal" class="modal">
+    <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+        <h3>Личный кабинет</h3>
+        <div id="profileInfo"></div>
+        
+        <h4 style="margin-top:30px;">Мои заявки</h4>
+        <div id="myOrders"></div>
+        
+        <button onclick="hideAllModals()" style="margin-top:20px;">Закрыть</button>
+    </div>
+</div>
 </body>
 </html>
