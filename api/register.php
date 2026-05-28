@@ -2,11 +2,7 @@
 header('Content-Type: application/json');
 require_once '../config.php';
 
-$data = json_decode(file_get_contents('php://input'), true);
-
-if (empty($data)) {
-    $data = $_POST;
-}
+$data = json_decode(file_get_contents('php://input'), true) ?: $_POST;
 
 $name     = trim($data['name'] ?? '');
 $email    = trim($data['email'] ?? '');
