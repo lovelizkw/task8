@@ -7,12 +7,12 @@ $data = json_decode(file_get_contents('php://input'), true) ?: $_POST;
 $name       = trim($data['name'] ?? '');
 $phone      = trim($data['phone'] ?? '');
 $email      = trim($data['email'] ?? '');
-$event_date = $data['date'] ?? '';
+$event_date = $data['event_date'] ?? '';
 $guests     = (int)($data['guests'] ?? 0);
-$event_type = $data['event_type'] ?? $data['eventType'] ?? '';
+$event_type = trim($data['event_type'] ?? '');
 $message    = trim($data['message'] ?? '');
 
-if (empty($name) || empty($phone) || empty($email) || $guests < 1) {
+if (empty($name) || empty($phone) || empty($email) || empty($event_date) || $guests < 1) {
     echo json_encode(['status' => 'error', 'message' => 'Заполните обязательные поля']);
     exit;
 }
@@ -27,11 +27,10 @@ try {
     $stmt->execute([$user_id, $name, $phone, $email, $event_date, $guests, $event_type, $message]);
 
     echo json_encode([
-        'status' => 'success',
-        'message' => 'Заявка успешно отправлена!',
-        'order_id' => $pdo->lastInsertId()
+        'status' => 'success', 
+        'message' => 'Заявка успешно отправлена! Мы свяжемся с вами.'
     ]);
 } catch(Exception $e) {
-    echo json_encode(['status' => 'error', 'message' => 'Ошибка сохранения']);
+    echo json_encode(['status' => 'error', 'message' => 'Ошибка при отправке']);
 }
 ?>
