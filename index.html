@@ -7,29 +7,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-
-<div id="registerModal" class="modal">
-    <div class="modal-content">
-        <h3>Регистрация</h3>
-        <input type="text" id="reg_name" placeholder="Ваше имя" required>
-        <input type="email" id="reg_email" placeholder="E-mail" required>
-        <input type="tel" id="reg_phone" placeholder="Телефон">
-        <input type="password" id="reg_password" placeholder="Пароль" required>
-        <button onclick="registerUser()">Зарегистрироваться</button>
-        <button onclick="hideAllModals()">Отмена</button>
-    </div>
-</div>
-
-<div id="loginModal" class="modal">
-    <div class="modal-content">
-        <h3>Вход в аккаунт</h3>
-        <input type="email" id="login_email" placeholder="E-mail" required>
-        <input type="password" id="login_password" placeholder="Пароль" required>
-        <button onclick="loginUser()">Войти</button>
-        <button onclick="hideAllModals()">Отмена</button>
-    </div>
-</div>
-  
 <body>
 
   <header>
@@ -55,25 +32,26 @@
         <li><a href="#form">Контакты</a></li>
       </ul>
       
-<div class="header-right">
-    <div class="header-phone">8 (800) 444-45-45</div>
-    
-    <div id="authBlock">
-        <button onclick="showLoginModal()" class="auth-btn">Войти</button>
-        <button onclick="showRegisterModal()" class="auth-btn">Регистрация</button>
-    </div>
-    
-    <div id="userBlock" style="display:none; align-items:center; gap:12px;">
-        <span id="usernameDisplay" style="font-weight:700; color:#5F9EA0;"></span>
-        <button onclick="showProfile()" class="auth-btn">Кабинет</button>
-        <button onclick="logout()" class="auth-btn">Выйти</button>
-    </div>
+      <div class="header-right">
+        <div class="header-phone">8 (800) 444-45-45</div>
+        
+        <!-- Блок авторизации -->
+        <div id="authBlock">
+          <button onclick="showLoginModal()" class="auth-btn">Войти</button>
+          <button onclick="showRegisterModal()" class="auth-btn">Регистрация</button>
+        </div>
+        
+        <div id="userBlock" style="display:none; align-items:center; gap:12px;">
+          <span id="usernameDisplay" style="font-weight:700; color:#5F9EA0;"></span>
+          <a href="admin.php" class="auth-btn">Кабинет</a>
+          <button onclick="logout()" class="auth-btn">Выйти</button>
+        </div>
 
-    <div class="language-switcher">
-        <button class="language-btn active" data-lang="ru">RU</button>
-        <button class="language-btn" data-lang="en">EN</button>
-    </div>
-</div>
+        <div class="language-switcher">
+          <button class="language-btn active" data-lang="ru">RU</button>
+          <button class="language-btn" data-lang="en">EN</button>
+        </div>
+      </div>
       
       <div class="burger" id="burger">
         <span></span><span></span><span></span>
@@ -1212,66 +1190,70 @@
 </section>
 
 <section class="form-section" id="form">
-  <div class="container">
-    <h2>Оставить заявку на организацию банкета</h2>
-    <form id="mainForm" action="api/submit.php" method="POST" novalidate>
-      <div class="form-row">
-        <input type="text" id="name" name="name" placeholder="Ваше имя" required>
-        <input type="tel" id="phone" name="phone" placeholder="+7 (___) ___-__-__" required>
-      </div>
-      <input type="email" id="email" name="email" placeholder="E-mail" required>
-      <div class="form-row">
-        <div>
-          <input type="date" id="date" name="date" placeholder="Дата мероприятия" required>
-          <span class="date-hint">* Дата, на которую планируется мероприятие</span>
+    <div class="container">
+      <h2>Оставить заявку на организацию банкета</h2>
+      <form id="mainForm" action="api/submit.php" method="POST" novalidate>
+        <!-- Твои поля формы -->
+        <div class="form-row">
+          <input type="text" id="name" name="name" placeholder="Ваше имя" required>
+          <input type="tel" id="phone" name="phone" placeholder="+7 (___) ___-__-__" required>
         </div>
-        <input type="number" id="guests" name="guests" placeholder="Количество гостей" min="1" required>
-      </div>
-      
-      <div class="price-calculation" id="priceCalculation" style="display: none;">
-        <h4>Примерная стоимость:</h4>
-        <div id="priceInfo"></div>
-        <div class="price-result"><strong id="totalPrice">0 ₽</strong></div>
-      </div>
-      
-      <select id="eventType" name="eventType" required>
-        <option value="" disabled selected>Тип мероприятия</option>
-        <option value="corporate">Корпоративный банкет</option>
-        <option value="wedding">Свадебный банкет</option>
-        <option value="birthday">День рождения</option>
-        <option value="conference">Конференция/Совещание</option>
-        <option value="graduation">Выпускной вечер</option>
-        <option value="other">Другое</option>
-      </select>
-      <select id="tariff" name="tariff" required>
-        <option value="" disabled selected>Выберите тариф</option>
-        <option value="basic" data-price="1700" data-max-guests="15">Базовый (1 700₽/чел)</option>
-        <option value="medium" data-price="3600" data-max-guests="30">Медиум (3 600₽/чел)</option>
-        <option value="premium" data-price="5300" data-max-guests="50">Премиум (5 300₽/чел)</option>
-        <option value="ultima" data-price="10200" data-max-guests="99999">Ультима (10 200₽/чел)</option>
-      </select>
-      <textarea id="message" name="message" placeholder="Дополнительные пожелания" rows="5"></textarea>
-      <button type="submit" id="submitBtn">
-        Отправить заявку
-      </button>
-      <p id="successMessage" class="success" style="display:none">Спасибо! Мы свяжемся с вами в ближайшее время.</p>
-      <p id="errorMessage" class="error" style="display:none">Ошибка отправки. Попробуйте позже.</p>
-    </form>
+        <input type="email" id="email" name="email" placeholder="E-mail" required>
+        <div class="form-row">
+          <div>
+            <input type="date" id="date" name="date" required>
+            <span class="date-hint">* Дата мероприятия</span>
+          </div>
+          <input type="number" id="guests" name="guests" placeholder="Количество гостей" min="1" required>
+        </div>
+        
+        <select id="eventType" name="eventType" required>
+          <option value="" disabled selected>Тип мероприятия</option>
+          <option value="corporate">Корпоративный банкет</option>
+          <option value="wedding">Свадебный банкет</option>
+          <option value="birthday">День рождения</option>
+          <option value="conference">Конференция/Совещание</option>
+          <option value="graduation">Выпускной вечер</option>
+          <option value="other">Другое</option>
+        </select>
+        
+        <select id="tariff" name="tariff" required>
+          <option value="" disabled selected>Выберите тариф</option>
+          <option value="basic" data-price="1700">Базовый (1 700₽/чел)</option>
+          <option value="medium" data-price="3600">Медиум (3 600₽/чел)</option>
+          <option value="premium" data-price="5300">Премиум (5 300₽/чел)</option>
+          <option value="ultima" data-price="10200">Ультима (10 200₽/чел)</option>
+        </select>
+        
+        <textarea id="message" name="message" placeholder="Дополнительные пожелания" rows="5"></textarea>
+        
+        <button type="submit" id="submitBtn">Отправить заявку</button>
+      </form>
+    </div>
+  </section>
+
+  <div id="registerModal" class="modal">
+    <div class="modal-content">
+      <h3>Регистрация</h3>
+      <input type="text" id="reg_name" placeholder="Ваше имя" required>
+      <input type="email" id="reg_email" placeholder="E-mail" required>
+      <input type="tel" id="reg_phone" placeholder="Телефон">
+      <input type="password" id="reg_password" placeholder="Пароль" required>
+      <button onclick="registerUser()">Зарегистрироваться</button>
+      <button onclick="hideAllModals()">Отмена</button>
+    </div>
   </div>
-</section>
+
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <h3>Вход в аккаунт</h3>
+      <input type="email" id="login_email" placeholder="E-mail" required>
+      <input type="password" id="login_password" placeholder="Пароль" required>
+      <button onclick="loginUser()">Войти</button>
+      <button onclick="hideAllModals()">Отмена</button>
+    </div>
+  </div>
 
   <script src="script.js"></script>
- 
-<div id="profileModal" class="modal">
-    <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
-        <h3>Личный кабинет</h3>
-        <div id="profileInfo"></div>
-        
-        <h4 style="margin-top:30px;">Мои заявки</h4>
-        <div id="myOrders"></div>
-        
-        <button onclick="hideAllModals()" style="margin-top:20px;">Закрыть</button>
-    </div>
-</div>
 </body>
 </html>
